@@ -65,6 +65,7 @@ export const WishlistProvider = ({ children }: IMoviesContext) => {
         return moviesFromDB
     };
 
+    // Méthode => GET
     const { data, isError, isLoading, refetch } = useQuery({
         queryKey: ['movies'],
         queryFn: () => getDataFromDB(page),

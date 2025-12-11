@@ -1,18 +1,18 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router";
+import { registerUser } from "../api/user";
+import type { IUser } from "../interfaces/user";
 
 const Signup = () => {
-
-    interface IFormSignup {
-        email: string,
-        password: string,
-        confirmPassword: string
+    interface IResponse {
+        status: number,
+        body: IUser
     }
 
     const emailRegex = /^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?. &])[A-Za-z\d@$!%*?. &]{8,}$/;
-
     const [isPasswordOk, setIsPasswordOk] = useState<boolean>(false);
     const navigate = useNavigate()
 
@@ -20,21 +20,31 @@ const Signup = () => {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<IFormSignup>()
+    } = useForm<IUser>()
 
-    const handleClick = (data: IFormSignup) => {
-        console.log(data)
-
+    const handleClick = (data: IUser) => {
+        
         if (data.password === data.confirmPassword) {
-            //send http request !
-            //response from server
-            // if ok => redirection to signin page
-            //else => display alert !
-            navigate('/signin');
+            console.log(data)
+            addUser.mutate(data)
         } else {
             setIsPasswordOk(true);
         }
     }
+
+    //Méthode => POST, PUT, PATCH, etc.
+    const addUser = useMutation({
+        mutationKey: ['register user'],
+        mutationFn: (body: IUser) => registerUser(body),
+        onSuccess: (responseFromServer: IResponse) => {
+            if (responseFromServer.status === 201) {
+                navigate('/signin');
+            }
+        },
+        onError: () => {
+            setIsPasswordOk(true);
+        }
+    })
 
     return (
         <div className="min-h-screen bg-linear-to-b from-[#0b0b0b] via[#0f0f0f] to-black flex items-center justify-center p-6">
