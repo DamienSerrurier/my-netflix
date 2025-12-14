@@ -1,11 +1,9 @@
-import { useContext } from "react";
 import { Link } from "react-router";
-import WishlistContext from "../context/WishlistProvider";
+import { useWishlist } from "../services/store/wishlistStore";
 
 
 const NavigationBar = ({ isAdmin }: any)=> {
-
-    const { counterMovies } = useContext(WishlistContext);
+    const counterMovies = useWishlist((state) => state.counterMovies);
 
     return (
         <div>

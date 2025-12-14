@@ -10,8 +10,6 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MovieDetails from "./pages/MovieDetails";
 import type { IProduct } from "./interfaces/product";
-import { CounterProvider } from "./context/CounterProvider";
-import { WishlistProvider } from "./context/WishlistProvider";
 import { useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import AuthLayout from "./layout/AuthLayout";
@@ -36,8 +34,6 @@ const App = () => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <WishlistProvider >
-                <CounterProvider>
                     <BrowserRouter>
                         <Routes>
                             <Route path="/" element={<AuthLayout />}>
@@ -56,8 +52,6 @@ const App = () => {
                             </Route>
                         </Routes>
                     </BrowserRouter>
-                </CounterProvider>
-            </WishlistProvider>
             <ReactQueryDevtools />
         </QueryClientProvider>
 

@@ -1,18 +1,19 @@
-import { useContext } from "react";
 import type { IMovie } from "../interfaces/movie";
-import WishlistContext from "../context/WishlistProvider";
+import { useWishlist } from "../services/store/wishlistStore";
 
 const Mylist = () => {
-
-    const { wishlist, handleWishlist, clearMovies } = useContext(WishlistContext)
+    const clearMovies = useWishlist((state => state.clearMovies));
+    const handleWishlist = useWishlist((state => state.handleWishlist));
+    const wishlist = useWishlist((state) => state.wishlist);
 
     const deleteMovie = (movie: IMovie) => {
         handleWishlist(movie);
-    }
+    };
 
     const clearWishlist = () => {
+        useWishlist.persist.clearStorage();
         clearMovies();
-    }
+    };
 
     return (
         <div>

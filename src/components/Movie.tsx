@@ -1,21 +1,19 @@
-import { useContext } from "react";
 import type { IMovie } from "../interfaces/movie";
-import CounterContext from "../context/CounterProvider";
 import { FaRegHeart } from "react-icons/fa6";
 import { MdAddCircleOutline } from "react-icons/md";
 import { FaRegCircleCheck } from "react-icons/fa6";
-import WishlistContext from "../context/WishlistProvider";
 import { CiPlay1 } from "react-icons/ci";
 import { Link } from "react-router";
+import { useCounter } from "../services/store/counterStore";
+import { useWishlist } from "../services/store/wishlistStore";
 
 interface IMovieComponent {
     movieData: IMovie,
 }
 
 const Movie = ({ movieData }: IMovieComponent) => {
-
-    const { counter, increment } = useContext(CounterContext);
-    const { handleWishlist } = useContext(WishlistContext);
+    const {counter, increment} = useCounter();
+    const handleWishlist = useWishlist((state => state.handleWishlist));
 
     const sendToContext = (movieData: IMovie) => {
         handleWishlist(movieData);
@@ -24,7 +22,7 @@ const Movie = ({ movieData }: IMovieComponent) => {
     const handleClick = () => {
         increment();
     }
-    
+
     return (
         <div>
             <div>

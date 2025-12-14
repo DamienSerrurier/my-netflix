@@ -14,7 +14,6 @@ interface IContextMovies {
     isLoading: boolean,
     isError: boolean,
     page: number,
-    toggleStatus: (id: number) => void,
     handleWishlist: (movie: IMovie) => void,
     clearMovies: () => void,
     addPage: () => void
@@ -27,7 +26,6 @@ const WishlistContext = createContext<IContextMovies>({
     isLoading: true,
     isError: false,
     page: 1,
-    toggleStatus: () => { },
     handleWishlist: () => { },
     clearMovies: () => { },
     addPage: () => { }
@@ -38,12 +36,9 @@ export const WishlistProvider = ({ children }: IMoviesContext) => {
     const [movies, setMovies] = useState<Array<IMovie>>([]);
     const [wishlist, setWishlist] = useState<Array<IMovie>>(JSON.parse(localStorage.getItem("movies") ?? '[]'));
     const [counterMovies, setCounterMovies] = useState<number>(JSON.parse(localStorage.getItem("counterMovies") ?? '0'));
-    // const [isLoading, setIsloading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
-    // const movies: Array<IMovie> = [];
 
     const getDataFromDB = async (page: number) => {
-        // setIsloading(true);
         const moviesFromDB = await getMovies(page);
         const syncedMovies = moviesFromDB.map((movie: { id: number }) => {
             const inWishlist = wishlist.find(w => w.id === movie.id);
@@ -51,7 +46,7 @@ export const WishlistProvider = ({ children }: IMoviesContext) => {
         });
 
         if (moviesFromDB) {
-            // setIsloading(false);
+
             if (page >= 2) {
                 const acculatedMovies = [...movies, ...syncedMovies];
                 setMovies(acculatedMovies);
@@ -82,10 +77,11 @@ export const WishlistProvider = ({ children }: IMoviesContext) => {
     const toggleStatus = (id: number) => {
         const moviesList = movies.map((movie: IMovie) => movie.id === id ? { ...movie, status: !movie.status } : movie);
         setWishlist(moviesList);
-
+        
     }
-
+    
     const handleWishlist = (movie: IMovie) => {
+        toggleStatus(movie.id);
         if (!movie.status) {
             const updateMovieStatus = { ...movie, status: true };
             const updatedWishlist = [...wishlist, updateMovieStatus];
@@ -111,7 +107,6 @@ export const WishlistProvider = ({ children }: IMoviesContext) => {
     }
 
     const addPage = () => {
-        console.log(page)
         setPage(page + 1);
         refetch();
     }
@@ -125,7 +120,7 @@ export const WishlistProvider = ({ children }: IMoviesContext) => {
     }
 
     return (
-        <WishlistContext.Provider value={{ movies, wishlist, counterMovies, isLoading, isError, page, toggleStatus, handleWishlist, clearMovies, addPage }}>
+        <WishlistContext.Provider value={{ movies, wishlist, counterMovies, isLoading, isError, page, handleWishlist, clearMovies, addPage }}>
             {children}
         </WishlistContext.Provider>
     );
